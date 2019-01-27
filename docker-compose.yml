@@ -1,0 +1,50 @@
+version: '3.7'
+services:
+  db:
+    image: mysql:5.7
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    volumes:
+      - ./storage/docker/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+#  mysql:
+#    image: mysql:8.0
+#    restart: on-failure
+#    environment:
+#      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#      MYSQL_DATABASE: ${MYSQL_DATABASE}
+#      MYSQL_USER: ${MYSQL_USER}
+#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+#  mysql:
+#    image: mysql:8.0
+#    restart: on-failure
+#    environment:
+#      - "MYSQL_ROOT_PASSWORD=secret"
+#      - "MYSQL_USER=app"
+#      - "MYSQL_PASSWORD=secret"
+#      - "MYSQL_DATABASE=app"
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    restart: on-failure
+    volumes:
+      - './apps/my-symfony-app/:/usr/src/app'
+    user: ${LOCAL_USER}
+
+  nginx:
+    image: nginx:1.15.3-alpine
+    restart: on-failure
+    volumes:
+      - './apps/my-symfony-app/public/:/usr/src/app'
+      - './docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
+    ports:
+      - '${NGINX_PORT}:80'
+    depends_on:
+      - php

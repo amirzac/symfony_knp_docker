@@ -1,0 +1,12 @@
+###> symfony/framework-bundle ###
+/.env.local
+/.env.*.local
+/apps/my-symfony-app/public/bundles/
+/apps/my-symfony-app/var/
+/apps/my-symfony-app/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/web-server-bundle ###
+/apps/my-symfony-app/.web-server-pid
+###< symfony/web-server-bundle ###
+/storage/
