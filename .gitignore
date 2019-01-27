@@ -10,3 +10,6 @@
 /apps/my-symfony-app/.web-server-pid
 ###< symfony/web-server-bundle ###
 /storage/
+
+#phpstorm files
+/.idea

@@ -1,25 +1,5 @@
 <?php
 
-//$servername = "localhost";
-//$username = "symfony";
-//$password = "symfony";
-//
-//try {
-//    $dbh = new PDO('mysql:host=db;dbname=symfony', $username, $password);
-//
-//    echo 'true';
-//
-//} catch (PDOException $e) {
-//    print "Error!: " . $e->getMessage() . "<br/>";
-//    die();
-//}
-//
-//echo "<pre>".print_r($_ENV, true)."</pre>";
-//
-//echo 'test';
-//
-//die();
-
 use App\Kernel;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
