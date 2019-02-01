@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "knplabs/knp-markdown-bundle": "^1.7",
+        "knplabs/knp-paginator-bundle": "^2.8",
         "nexylan/slack-bundle": "^2.0",
         "php-http/guzzle6-adapter": "1.1.1",
         "sensio/framework-extra-bundle": "^5.2",
@@ -17,9 +18,11 @@
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "4.2.*",
         "symfony/orm-pack": "^1.0",
+        "symfony/translation": "4.2.*",
         "symfony/twig-bundle": "4.2.*",
         "symfony/web-server-bundle": "4.2.*",
-        "symfony/yaml": "4.2.*"
+        "symfony/yaml": "4.2.*",
+        "twig/extensions": "^1.5"
     },
     "config": {
         "preferred-install": {
