@@ -7,8 +7,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Core\Security;
 
@@ -18,10 +22,21 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     private $router;
 
-    public function __construct(UserRepository $userRepository, RouterInterface $router)
+    private $csrfTokenManager;
+
+    private $passwordEncoder;
+
+    public function __construct(
+        UserRepository $userRepository,
+        RouterInterface $router,
+        CsrfTokenManagerInterface $csrfTokenManager,
+        UserPasswordEncoderInterface $passwordEncoder
+    )
     {
         $this->userRepository = $userRepository;
         $this->router = $router;
+        $this->csrfTokenManager = $csrfTokenManager;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function supports(Request $request)
@@ -36,6 +51,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $credentials = [
             'email' => $request->request->get('email'),
             'password' => $request->request->get('password'),
+            '_csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
@@ -47,6 +63,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        $token = new CsrfToken('authenticate', $credentials['_csrf_token']);
+        if(!$this->csrfTokenManager->isTokenValid($token)) {
+            throw new InvalidCsrfTokenException();
+        }
+
         //if method return null, that user will see an error message,
         //if method return User object, the next method will be self::checkCredentials(). $credentials - will be same
 
@@ -57,7 +78,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     {
         //in this method we check is user password is correct
         //if true, will call method onAuthenticationSuccess, if false onAuthenticationFailure
-        return true;
+        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 
 //    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
