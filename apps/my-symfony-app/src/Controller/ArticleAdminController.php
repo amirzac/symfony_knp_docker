@@ -37,11 +37,8 @@ class ArticleAdminController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $article = new Article();
-            $article->setTitle($data['title']);
-            $article->setContent($data['content']);
+            /** @var Article $article */
+            $article = $form->getData();
             $article->setAuthor($this->getUser());
 
             $em->persist($article);
@@ -56,6 +53,7 @@ class ArticleAdminController extends AbstractController
             'articleForm' => $form->createView()
         ]);
     }
+
     /**
      * @Route("/admin/article/{id}/edit")
      * @IsGranted("MANAGE", subject="article")
