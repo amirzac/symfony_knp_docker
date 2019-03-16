@@ -24,6 +24,7 @@ class UserFixture extends BaseFixture
             $user->setFirstName($this->faker->firstName);
             $user->setPassword($this->userPasswordEncoder->encodePassword($user, '123456'));
             $user->setTwitterUsername($this->faker->userName);
+            $user->agreeToTerms();
 
             $apiToken1 = new ApiToken($user);
             $apiToken2 = new ApiToken($user);
@@ -42,6 +43,7 @@ class UserFixture extends BaseFixture
             $user->setRoles([
                 'ROLE_ADMIN'
             ]);
+            $user->agreeToTerms();
 
             return $user;
         });
