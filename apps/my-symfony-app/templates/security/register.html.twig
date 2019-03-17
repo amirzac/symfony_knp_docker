@@ -1,4 +1,34 @@
 {% extends 'base.html.twig' %}
+
+{#theme name#}
+{% form_theme registrationForm _self %}
+
+{#replace block(theme for form_row content)#}
+{% block form_row %}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+
+
+    {{- form_label(form, null, {
+        label_attr: { class: 'sr-only' }
+    }) -}}
+    {{- form_errors(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+    {{- form_help(form) -}}
+{% endblock %}
+
+{#theme for checkbox#}
+{% block _user_registration_form_agreeTerms_row %}
+    <div class="checkbox mb-3">
+        {{ form_errors(form) }}
+        <label>
+            <input type="checkbox" name="{{ full_name }}" required> Agree to terms I for sure read
+        </label>
+    </div>
+{% endblock %}
+
 {% block title %}Register!{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
@@ -13,7 +43,15 @@
                     'attr': {'class': 'form-signin'}
                 }) }}
                 <h1 class="h3 mb-3 font-weight-normal">Register</h1>
-                {{ form_widget(registrationForm) }}
+
+                {{ form_row(registrationForm.email, {
+                    attr: { placeholder: 'Email' }
+                }) }}
+                {{ form_row(registrationForm.plainPassword, {
+                    attr: { placeholder: 'Password' }
+                }) }}
+                {{ form_row(registrationForm.agreeTerms) }}
+
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
                     Register
                 </button>
