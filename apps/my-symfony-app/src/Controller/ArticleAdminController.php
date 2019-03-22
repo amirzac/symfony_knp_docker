@@ -35,7 +35,7 @@ class ArticleAdminController extends AbstractController
         $form = $this->createForm(ArticleFormType::class);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var Article $article */
             $article = $form->getData();
 
@@ -74,6 +74,26 @@ class ArticleAdminController extends AbstractController
 
         return $this->render('article_admin/edit.html.twig', [
             'articleForm' => $form->createView()
+        ]);
+    }
+
+
+    /**
+     * @Route("/admin/article/location-select", name="admin_article_location_select")
+     */
+    public function getSpecificLocationSelect(Request $request)
+    {
+        $article = new Article();
+        $article->setLocation($request->query->get('location'));
+        $form = $this->createForm(ArticleFormType::class, $article);
+
+        // no field? Return an empty response
+        if (!$form->has('specificLocationName')) {
+            return new Response(null, 204);
+        }
+
+        return $this->render('article_admin/_specific_location_name.html.twig', [
+            'articleForm' => $form->createView(),
         ]);
     }
 }
