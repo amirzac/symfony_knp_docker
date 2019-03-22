@@ -22,22 +22,31 @@ class ArticleFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $article = $options['data'] ?? null;
+        $isEdit = $article && $article->getId();//disable author input if 'edit' page
+
         $builder
             ->add('title', TextType::class, [
                 'help' => 'Choose something cathy!'
             ])
             ->add('content')
-            ->add('publishedAt', null, [
-                'widget' => 'single_text',//datepicker widget
+            ->add('author', UserSelectTextType::class, [
+                'disabled' => $isEdit
             ])
-            ->add('author', UserSelectTextType::class)
         ;
+
+        if ($options['include_published_at']) {
+            $builder->add('publishedAt', null, [
+                'widget' => 'single_text',//datepicker widget
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Article::class,
+            'include_published_at' => false,
         ]);
     }
 }
