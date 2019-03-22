@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\Model\UserRegistrationFormModel;
 use App\Form\UserRegistrationFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,14 +51,17 @@ class SecurityController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()) {
 
-            /** @var $user User*/
-            $user = $form->getData();
+            /** @var $userModel UserRegistrationFormModel*/
+            $userModel = $form->getData();
+
+            $user = new User();
+            $user->setEmail($userModel->email);
             $user->setPassword($passwordEncoder->encodePassword(
                 $user,
-                $form['plainPassword']->getData()
+                $userModel->plainPassword
             ));
             // be absolutely sure they agree
-            if (true === $form['agreeTerms']->getData()) {
+            if (true === $userModel->agreeTerms) {
                 $user->agreeToTerms();
             }
 
